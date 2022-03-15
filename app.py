@@ -1,7 +1,8 @@
+from threading import Thread
 import tkinter as tk
 
 # Import enums
-from models.enum_control_status import ControlStatus
+from models.enum_control_state import ControlState
 from models.enum_temperature_units import TemperatureUnits
 from models.enum_distance_units import DistanceUnits
 
@@ -20,7 +21,7 @@ from controllers.motor_controller import MotorController
 
 DEFAULT_TEMPERATURE_UNIT = TemperatureUnits.CELSUS
 DEFAULT_DISTANCE_UNIT = DistanceUnits.CENTIMETER
-DEFAULT_MOTOR_STATUS = ControlStatus.AUTOMATIC
+DEFAULT_MOTOR_STATE = ControlState.AUTOMATIC
 
 class App(tk.Tk):
     def __init__(self):
@@ -31,24 +32,35 @@ class App(tk.Tk):
         # Create the model
         self.temperature = Temperature(0, DEFAULT_TEMPERATURE_UNIT)
         self.distance = Distance(0, DEFAULT_DISTANCE_UNIT)
-        self.motor_status = MotorStatus(DEFAULT_MOTOR_STATUS, 0, 0)
+        self.motor_status = MotorStatus(DEFAULT_MOTOR_STATE, 0, 0)
 
         # Create the views
         self.view = View(self)
         self.view.grid(row=0, column=0, padx=15, pady=15)
 
-        # Create and start the controllers
-        temperature_controller_thread = TemperatureController(self.temperature, self.view)
-        temperature_controller_thread.start()
+        # Create and start the controllers threads
+        self.stop_threads = False
 
-        distance_controller_thread = DistanceController(self.distance, self.view)
-        distance_controller_thread.start()
+        self.temperature_controller = TemperatureController(self.temperature, self.view)
+        update_temperature_thread = Thread(target = self.temperature_controller.update_temperature_thread, args = (lambda : self.stop_threads, ))
+        update_temperature_thread.start()
+        
+        self.distance_controller = DistanceController(self.distance, self.view)
+        update_distance_thread = Thread(target = self.distance_controller.update_distance_thread, args = (lambda : self.stop_threads, ))
+        update_distance_thread.start()
+
+        self.motor_controller = MotorController(self.motor_status, self.view)
+        update_motor_status_thread = Thread(target = self.motor_controller.state_machine_thread, args = (lambda : self.stop_threads, ))
+        update_motor_status_thread.start()
+
+def callback():
+    app.stop_threads = True
+    app.destroy()
 
 if __name__ == '__main__':
     try:
         app = App()
+        app.protocol("WM_DELETE_WINDOW", callback)
         app.mainloop()
     except KeyboardInterrupt:
         print("User interrupted the execution")
-    except:
-        print("Fatal: unexpected exception")

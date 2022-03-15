@@ -1,24 +1,16 @@
 import RPi.GPIO as GPIO
 import time
-from threading import Thread
 
 trigPin = 16
 echoPin = 18
-MAX_DISTANCE = 220          # Define the maximum measuring distance, unit: cm
-timeOut = MAX_DISTANCE*60   # Calculate timeout according to the maximum measuring distance
+MAX_DISTANCE = 220 # Define the maximum measuring distance, unit: cm
+timeOut = MAX_DISTANCE * 60 # Calculate timeout according to the maximum measuring distance
 
-class DistanceController(Thread):
+class DistanceController():
     def __init__(self, distance, view):
-        super().__init__()
         self.distance_model = distance
         self.view = view
         self.setup()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self):
-        GPIO.cleanup()   
 
     def setup(self):
         GPIO.setmode(GPIO.BOARD) # Use PHYSICAL GPIO Numbering
@@ -34,9 +26,9 @@ class DistanceController(Thread):
         t0 = time.time()
 
         while(GPIO.input(pin) == level):
-            if((time.time() - t0) > timeOut*0.000001):
+            if((time.time() - t0) > timeOut * 0.000001):
                 return 0
-        pulseTime = (time.time() - t0)*1000000
+        pulseTime = (time.time() - t0) * 1000000
         
         return pulseTime
     
@@ -49,12 +41,15 @@ class DistanceController(Thread):
         
         return round(distance)
     
-    def run(self):
-        while(True):
+    def update_distance_thread(self, stop):
+        while True:
+            if stop(): break
+
             distance = self.get_distance() 
 
             self.distance_model.value = distance
             self.view.update_distance(distance)
 
             time.sleep(1)
+        GPIO.cleanup
     

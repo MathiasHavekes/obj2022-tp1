@@ -7,6 +7,7 @@ from .motor_percentage_frame import MotorPercentageFrame
 class View(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent = parent
 
         self.title = ttk.Label(self, text='Contrôle d\'une porte d\'aération d\'une serre')
         self.title.grid(row=0, column=0, columnspan=3, padx=20, pady=20)
@@ -42,20 +43,11 @@ class View(ttk.Frame):
     def update_rotation_direction(self, direction):
         self.motor_status_view = direction
 
-    def set_automatic_mode(self, event):
-        print('AUTO')
-
-    def set_manuel_mode(self, event):
-        print('MANUEL')
+    def set_motor_state(self, motor_state):
+        self.parent.motor_controller.update_motor_state(motor_state)
 
     def open_door_with_percentage(self, open_percentage):
         self.update_open_percentage(open_percentage)
-        
-    def open_door(self, event):
-        print('OPEN')
-
-    def close_door(self, event):
-        print('CLOSE')
 
     def log_button_pressed(self, event):
         print('LOG')

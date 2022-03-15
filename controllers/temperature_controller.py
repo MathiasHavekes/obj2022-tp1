@@ -1,23 +1,14 @@
 import RPi.GPIO as GPIO
 import time
 import math
-from threading import Thread
 from .ADCDevice import *
 
-class TemperatureController(Thread):
+class TemperatureController():
     def __init__(self, temperature, view):
-        super().__init__()
         self.temperature_model = temperature
         self.view = view
         self.adc = ADCDevice()
         self.setup()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self):
-        self.adc.close()
-        GPIO.cleanup()
 
     def setup(self):
         if(self.adc.detectI2C(0x48)): # Detect the pcf8591.
@@ -39,11 +30,15 @@ class TemperatureController(Thread):
         
         return round(tempC)
             
-    def run(self):
-        while(True):
+    def update_temperature_thread(self, stop):
+        while True:
+            if stop(): break
+
             temperature = self.get_temperature() 
 
             self.temperature_model.value = temperature
             self.view.update_temperature(temperature)
 
             time.sleep(1)
+        self.adc.close()
+        GPIO.cleanup

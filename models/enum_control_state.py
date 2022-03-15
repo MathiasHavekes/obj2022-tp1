@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-class ControlStatus(Enum):
+class ControlState(Enum):
     AUTOMATIC = auto()
     MANUAL = auto()
     OPEN_DOOR = auto()

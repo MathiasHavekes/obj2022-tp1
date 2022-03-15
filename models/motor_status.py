@@ -1,12 +1,12 @@
 class MotorStatus:
-    def __init__(self, status, direction, speed):
-        self._status = status 
+    def __init__(self, state, direction, speed):
+        self._state = state 
         self._direction = direction
         self._speed = speed
 
     @property
-    def status(self):
-        return self._status
+    def state(self):
+        return self._state
 
     @property
     def direction(self):
@@ -16,9 +16,9 @@ class MotorStatus:
     def speed(self):
         return self._speed
 
-    @status.setter
-    def status(self, new_status):
-        self._status = new_status
+    @state.setter
+    def state(self, new_state):
+        self._state = new_state
 
     @direction.setter
     def temperature(self, new_direction):

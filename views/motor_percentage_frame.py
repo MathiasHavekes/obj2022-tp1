@@ -1,4 +1,3 @@
-from concurrent.futures import thread
 from threading import Thread
 from time import sleep
 from tkinter import ttk
