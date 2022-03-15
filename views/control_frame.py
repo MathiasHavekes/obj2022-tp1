@@ -2,6 +2,8 @@ from models.enum_control_state import ControlState
 import tkinter as tk
 from tkinter import ttk
 
+OPEN_PERCENTAGE_DEFAULT_VALUE = 50
+
 class ControlFrame(ttk.LabelFrame):
     def __init__(self, container):
         super().__init__(container, text='Controles')
@@ -17,6 +19,7 @@ class ControlFrame(ttk.LabelFrame):
 
         self.percentage_entry = ttk.Entry(self, text='Pourcentage d\'ouverture', width=3)
         self.percentage_entry.grid(column=1, row=1, sticky=tk.E)
+        self.percentage_entry.insert(0, OPEN_PERCENTAGE_DEFAULT_VALUE)
         self.percentage_entry.bind('<KeyRelease>', self.entry_key_released)
 
         self.label = ttk.Label(self, text='%')
