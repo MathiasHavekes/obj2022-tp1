@@ -23,6 +23,9 @@ DEFAULT_TEMPERATURE_UNIT = TemperatureUnits.CELSUS
 DEFAULT_DISTANCE_UNIT = DistanceUnits.CENTIMETER
 DEFAULT_MOTOR_STATE = ControlState.AUTOMATIC
 
+DEFAULT_MIN_VALUE = 5
+DEFAULT_MAX_VALUE = 15
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -31,7 +34,7 @@ class App(tk.Tk):
 
         # Create the model
         self.temperature = Temperature(0, DEFAULT_TEMPERATURE_UNIT)
-        self.distance = Distance(0, DEFAULT_DISTANCE_UNIT)
+        self.distance = Distance(0, DEFAULT_DISTANCE_UNIT, DEFAULT_MIN_VALUE, DEFAULT_MAX_VALUE)
         self.motor_status = MotorStatus(DEFAULT_MOTOR_STATE, 0, 0)
 
         # Create the views
@@ -49,7 +52,7 @@ class App(tk.Tk):
         update_distance_thread = Thread(target = self.distance_controller.update_distance_thread, args = (lambda : self.stop_threads, ))
         update_distance_thread.start()
 
-        self.motor_controller = MotorController(self.motor_status, self.view)
+        self.motor_controller = MotorController(self.motor_status, self.temperature, self.view)
         update_motor_status_thread = Thread(target = self.motor_controller.state_machine_thread, args = (lambda : self.stop_threads, ))
         update_motor_status_thread.start()
 

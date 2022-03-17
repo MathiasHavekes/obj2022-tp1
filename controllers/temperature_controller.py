@@ -3,6 +3,8 @@ import time
 import math
 from .ADCDevice import *
 
+TIME_BETWEEN_UPDATE = 1
+
 class TemperatureController():
     def __init__(self, temperature, view):
         self.temperature_model = temperature
@@ -25,7 +27,7 @@ class TemperatureController():
         value = self.adc.analogRead(0) # Read ADC value A0 pin
         voltage = value / 255.0 * 3.3 # Calculate voltage
         Rt = 10 * voltage / (3.3 - voltage) # Calculate resistance value of thermistor
-        tempK = 1/(1/(273.15 + 25) + math.log(Rt/10)/3950.0) # Calculate temperature (Kelvin)
+        tempK = 1 / (1 / (273.15 + 25) + math.log(Rt / 10) / 3950.0) # Calculate temperature (Kelvin)
         tempC = tempK -273.15 # Calculate temperature (Celsius)
         
         return round(tempC)
@@ -39,6 +41,6 @@ class TemperatureController():
             self.temperature_model.value = temperature
             self.view.update_temperature(temperature)
 
-            time.sleep(1)
+            time.sleep(TIME_BETWEEN_UPDATE)
         self.adc.close()
         GPIO.cleanup

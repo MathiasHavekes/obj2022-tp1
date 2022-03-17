@@ -7,8 +7,9 @@ CCWStep = (0x01,0x02,0x04,0x08) # Define power supply order for rotating anticlo
 CWStep = (0x08,0x04,0x02,0x01)  # Define power supply order for rotating clockwise
 
 class MotorController():
-    def __init__(self, motor_status, view):
+    def __init__(self, motor_status, temperature, view):
         self.motor_status_model = motor_status
+        self.temperature_model = temperature
         self.view = view
         self.setup()
 
@@ -51,9 +52,11 @@ class MotorController():
         while True:
             if stop(): break
             elif self.motor_status_model.state == ControlState.AUTOMATIC:
+                temperature = self.temperature_model.value
+                #self.calculateOpenDistanceWithTemp(temperature)
                 continue
             elif self.motor_status_model.state == ControlState.MANUAL:
-                self.loop()
+                continue
             elif self.motor_status_model.state == ControlState.OPEN_DOOR:
                 continue
             elif self.motor_status_model.state == ControlState.CLOSE_DOOR:
