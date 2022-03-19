@@ -1,22 +1,34 @@
 from threading import Thread
 from time import sleep
+import tkinter as tk
 from tkinter import ttk
 
 TIME_BETWEEN_UPDATE = 0.001
 
 class MotorPercentageFrame(ttk.LabelFrame):
     def __init__(self, container):
-        super().__init__(container, text='Ouverture Porte')
+        super().__init__(container, text='Ouverture de la porte')
         self.stop_threads = False
 
-        self.percentageBar = ttk.Progressbar(self, orient='vertical', length=100)
-        self.percentageBar.grid(column=0, row=0)
+        self.percentage_bar = ttk.Progressbar(self, orient='vertical', length=100)
+        self.percentage_bar.grid(column=0, row=0)
+
+        self.dist_open_percentage = ttk.Label(self, text=0)
+        self.dist_open_percentage.grid(column=1, row=0, sticky=tk.EW)
+
+        self.percentage = ttk.Label(self, text='%')
+        self.percentage.grid(column=3, row=0, sticky=tk.EW)
 
     def update_open_percentage(self, new_open_percentage):
         self.stop_threads = True
 
-        new_open_percentage = int(new_open_percentage)
-        current_value = int(self.percentageBar['value'])
+        new_open_percentage = int(new_open_percentage) 
+        current_value = int(self.percentage_bar['value'])
+
+        if new_open_percentage < 0: return
+        if new_open_percentage > 100: return
+
+        self.dist_open_percentage['text'] = new_open_percentage
 
         open_direction = None
 
@@ -34,7 +46,7 @@ class MotorPercentageFrame(ttk.LabelFrame):
         for _ in range(open_value):
             if stop(): break
             elif open_direction:
-                self.percentageBar['value'] += 1
+                self.percentage_bar['value'] += 1
             elif not open_direction:
-                self.percentageBar['value'] -= 1
+                self.percentage_bar['value'] -= 1
             sleep(TIME_BETWEEN_UPDATE)

@@ -1,6 +1,7 @@
 from models.enum_control_state import ControlState
 import tkinter as tk
 from tkinter import ttk
+import logging
 
 OPEN_PERCENTAGE_DEFAULT_VALUE = 50
 
@@ -34,10 +35,12 @@ class ControlFrame(ttk.LabelFrame):
         self.close_door_button.bind('<Button>', self.close_button_pressed)
 
     def automatic_button_pressed(self, event):
+        logging.info('Selection du mode : automatique')
         new_motor_state = ControlState.AUTOMATIC
         self.container.set_motor_state(new_motor_state)
 
     def manuel_button_pressed(self, event):
+        logging.info('Selection du mode : manuel')
         new_motor_state = ControlState.MANUAL
         self.container.set_motor_state(new_motor_state)
 
@@ -50,12 +53,16 @@ class ControlFrame(ttk.LabelFrame):
 
         if user_entry > 100 or user_entry < 0: return
 
+        logging.info('Nouvelle valeur d\'ouverture de porte : %s', user_entry)
+
         self.container.open_door_with_percentage(user_entry)
 
     def open_button_pressed(self, event):
+        logging.info('Selection du mode : ouverture')
         new_motor_state = ControlState.OPEN_DOOR
         self.container.set_motor_state(new_motor_state)
 
     def close_button_pressed(self, event):
+        logging.info('Selection du mode : fermeture')
         new_motor_state = ControlState.CLOSE_DOOR
         self.container.set_motor_state(new_motor_state)

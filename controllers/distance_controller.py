@@ -1,5 +1,7 @@
+from models.enum_distance_units import DistanceUnits
 import RPi.GPIO as GPIO
 import time
+import logging
 
 TRIG_PIN = 16
 ECHO_PIN = 18
@@ -11,6 +13,7 @@ class DistanceController():
     def __init__(self, distance, view):
         self.distance_model = distance
         self.view = view
+        self.old_distance = 0
         self.time_out = MAX_DISTANCE * 60
         self.setup()
 
@@ -53,14 +56,32 @@ class DistanceController():
 
             if distance > max_distance or distance < min_distance: continue
 
-            distance_percentage = -50 + 10 * distance
+            distance_percentage = self.calculateOpenPercentage(distance, max_distance, min_distance)
 
-            print(distance_percentage)
-
+            if self.old_distance != distance:
+                unitValue = self.distance_model.unit
+                unit = DistanceUnits(unitValue).name.lower()
+                logging.info('Nouvelle distance d\'ouverture : %s %s ~ %s%%', 
+                distance, unit, distance_percentage)
+                self.old_distance = distance
+            
             self.distance_model.value = distance
             self.view.update_distance(distance)
             self.view.update_open_percentage(distance_percentage)
 
             time.sleep(TIME_BETWEEN_UPDATE)
         GPIO.cleanup
-    
+
+    """
+    Fonction qui calcul la distance d'ouverture de la porte en pourcentage 
+    avec une fonction de type : y = ax + b
+    On trouve a avec les points extremes :
+    a = (y_b - y_a) / (x_b - x_a)
+    b = -(ax - y)
+    """
+    def calculateOpenPercentage(self, distance, max_distance, min_distance) -> int:
+        gradient = 100 / (max_distance - min_distance)
+
+        intercept = - (gradient * max_distance - 100)
+
+        return round(gradient * distance + intercept)

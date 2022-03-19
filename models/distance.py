@@ -30,9 +30,9 @@ class Distance:
         self._unit = new_unit
 
     @min_value.setter
-    def unit(self, new_min_value):
+    def min_value(self, new_min_value):
         self._min_value = new_min_value
 
     @max_value.setter
-    def unit(self, new_max_value):
+    def max_value(self, new_max_value):
         self._max_value = new_max_value

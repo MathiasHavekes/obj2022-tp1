@@ -1,6 +1,8 @@
+from models.enum_temperature_units import TemperatureUnits
 import RPi.GPIO as GPIO
 import time
 import math
+import logging
 from .ADCDevice import *
 
 TIME_BETWEEN_UPDATE = 1
@@ -8,6 +10,7 @@ TIME_BETWEEN_UPDATE = 1
 class TemperatureController():
     def __init__(self, temperature, view):
         self.temperature_model = temperature
+        self.old_temperature = 0
         self.view = view
         self.adc = ADCDevice()
         self.setup()
@@ -30,14 +33,20 @@ class TemperatureController():
         tempK = 1 / (1 / (273.15 + 25) + math.log(Rt / 10) / 3950.0) # Calculate temperature (Kelvin)
         tempC = tempK -273.15 # Calculate temperature (Celsius)
         
-        return round(tempC)
+        return round(tempC, 1)
             
     def update_temperature_thread(self, stop):
         while True:
             if stop(): break
 
-            temperature = self.get_temperature() 
+            temperature = self.get_temperature()
 
+            if self.old_temperature != temperature:
+                unitValue = self.temperature_model.unit
+                unit = TemperatureUnits(unitValue).name.lower()
+                logging.info('Nouvelle temperature : %s %s', temperature, unit)
+                self.old_temperature = temperature
+            
             self.temperature_model.value = temperature
             self.view.update_temperature(temperature)
 

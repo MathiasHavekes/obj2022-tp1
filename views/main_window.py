@@ -1,13 +1,14 @@
-from tkinter import ttk
+from tkinter import Toplevel, ttk
 from .information_frame import InformationFrame
 from .motor_status_frame import MotorStatusFrame
 from .control_frame import ControlFrame
 from .motor_percentage_frame import MotorPercentageFrame
+from .log_frame import LogFrame
 
 class View(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
+        self.__parent = parent
 
         self.title = ttk.Label(self, text='Contrôle d\'une porte d\'aération d\'une serre')
         self.title.grid(row=0, column=0, columnspan=3, padx=20, pady=20)
@@ -44,10 +45,13 @@ class View(ttk.Frame):
         self.motor_status_view = direction
 
     def set_motor_state(self, motor_state):
-        self.parent.motor_controller.update_motor_state(motor_state)
+        self.__parent.motor_controller.update_motor_state(motor_state)
 
     def open_door_with_percentage(self, open_percentage):
         self.update_open_percentage(open_percentage)
 
     def log_button_pressed(self, event):
-        print('LOG')
+        popup = Toplevel(self.__parent)
+        popup.title('Logs')
+        log_view = LogFrame(popup)
+        log_view.grid(row=0, column=0)

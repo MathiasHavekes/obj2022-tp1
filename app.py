@@ -1,5 +1,6 @@
 from threading import Thread
 import tkinter as tk
+import logging
 
 # Import enums
 from models.enum_control_state import ControlState
@@ -23,7 +24,7 @@ DEFAULT_TEMPERATURE_UNIT = TemperatureUnits.CELSUS
 DEFAULT_DISTANCE_UNIT = DistanceUnits.CENTIMETER
 DEFAULT_MOTOR_STATE = ControlState.AUTOMATIC
 
-DEFAULT_MIN_VALUE = 5
+DEFAULT_MIN_VALUE = 0
 DEFAULT_MAX_VALUE = 15
 
 class App(tk.Tk):
@@ -61,9 +62,16 @@ def callback():
     app.destroy()
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        filename='logs.txt',
+        filemode='w', 
+        format='%(asctime)s %(levelname)s: %(message)s', 
+        datefmt='%d/%m/%y %I:%M:%S %p', 
+        level=logging.DEBUG)
     try:
+        logging.info('Demarrage de l\'application')
         app = App()
         app.protocol("WM_DELETE_WINDOW", callback)
         app.mainloop()
     except KeyboardInterrupt:
-        print("User interrupted the execution")
+        logging.warn('Interruption de l\'execution par l\'utilisateur')
