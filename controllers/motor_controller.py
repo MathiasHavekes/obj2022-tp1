@@ -82,6 +82,7 @@ class MotorController():
                 destination = Constants.MAX_DISTANCE
             elif self.__motor_status_model.state == ControlState.FERMER_PORTE:
                 destination = Constants.MIN_DISTANCE
+                
             self.pid.SetPoint = destination
             distance = self.__distance_model.value
             self.pid.update(distance)

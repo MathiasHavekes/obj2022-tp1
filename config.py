@@ -6,7 +6,7 @@ class Constants:
     MIN_TEMPERATURE = 20        # En celsus
     MAX_TEMPERATURE = 35        # En celsus
     MIN_DISTANCE = 0            # En centimetre
-    MAX_DISTANCE = 15           # En centimetre
+    MAX_DISTANCE = 14           # En centimetre
     MAX_DISTANCE_MEASURING = 50 # En centimetre
 
     DEFAULT_TEMPERATURE_UNIT = TemperatureUnit.CELSIUS
