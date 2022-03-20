@@ -29,4 +29,4 @@ class Constants:
     CCW_STEP = (0x01,0x02,0x04,0x08) # Define power supply order for rotating anticlockwise 
     CW_STEP = (0x08,0x04,0x02,0x01)  # Define power supply order for rotating clockwise
 
-    PID_SETUP = (2.0, 0.0, 0.0)
+    PID_SETUP = (200.0, 10.0, 10.0)
