@@ -11,7 +11,7 @@ class View(ttk.Frame):
         super().__init__(parent)
         self.__parent = parent
 
-        self.title = ttk.Label(self, text='Contrôle d\'une porte d\'aération d\'une serre')
+        self.title = ttk.Label(self, text='Contrôle d\'une porte d\'aération de serre')
         self.title.grid(row=0, column=0, columnspan=3, padx=20, pady=20)
 
         self.information_view = InformationFrame(self)
