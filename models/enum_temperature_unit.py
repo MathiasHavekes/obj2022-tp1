@@ -2,5 +2,5 @@ from enum import Enum, auto
 
 class TemperatureUnit(Enum):
     KELVIN = auto()
-    CELSUS = auto()
+    CELSIUS = auto()
     FAHRENHEIT = auto()

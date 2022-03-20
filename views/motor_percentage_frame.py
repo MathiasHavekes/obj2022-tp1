@@ -18,7 +18,7 @@ class MotorPercentageFrame(ttk.LabelFrame):
         self.percentage = ttk.Label(self, text='%')
         self.percentage.grid(column=3, row=0, sticky=tk.EW)
 
-    def update_open_percentage(self, new_open_percentage):
+    def update_open_percentage(self, new_open_percentage: int):
         self.stop_threads = True
 
         new_open_percentage = int(new_open_percentage) 
@@ -41,7 +41,7 @@ class MotorPercentageFrame(ttk.LabelFrame):
         self.stop_threads = False
         thread.start()
 
-    def update_progress_bar_thread(self, open_direction, open_value, stop):
+    def update_progress_bar_thread(self, open_direction: int, open_value: int, stop):
         for _ in range(open_value):
             if stop(): break
             elif open_direction:

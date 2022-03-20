@@ -46,7 +46,7 @@ class TemperatureController():
             else: continue
             
             self.__temperature_model.value = temperature
-            self.__view.update_temperature(temperature)
+            self.__view.update_temperature(self.__temperature_model)
 
             time.sleep(Constants.TIME_BETWEEN_TEMPERATURE_UPDATE)
         self.__adc.close()

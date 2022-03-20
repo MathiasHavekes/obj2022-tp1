@@ -9,7 +9,7 @@ class Constants:
     MAX_DISTANCE = 15           # En centimetre
     MAX_DISTANCE_MEASURING = 50 # En centimetre
 
-    DEFAULT_TEMPERATURE_UNIT = TemperatureUnit.CELSUS
+    DEFAULT_TEMPERATURE_UNIT = TemperatureUnit.CELSIUS
     DEFAULT_DISTANCE_UNIT = DistanceUnit.CENTIMETRE
     DEFAULT_MOTOR_STATE = ControlState.AUTOMATIQUE
     DEFAULT_DOOR_OPEN_PERCENTAGE = 50
@@ -29,4 +29,4 @@ class Constants:
     CCW_STEP = (0x01,0x02,0x04,0x08) # Define power supply order for rotating anticlockwise 
     CW_STEP = (0x08,0x04,0x02,0x01)  # Define power supply order for rotating clockwise
 
-    PID_SETUP = (200.0, 10.0, 10.0)
+    PID_SETUP = (200.0, 0.0, 0.0)

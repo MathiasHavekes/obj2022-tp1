@@ -55,7 +55,7 @@ class DistanceController():
             else: continue
             
             self.__distance_model.value = distance
-            self.__view.update_distance(distance)
+            self.__view.update_distance(self.__distance_model)
 
             distance_percentage = Utils.castValue(distance, 0, 100, 
                 Constants.MIN_DISTANCE, Constants.MAX_DISTANCE)
