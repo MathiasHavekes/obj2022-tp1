@@ -3,8 +3,8 @@ from models.enum_temperature_unit import TemperatureUnit
 from models.enum_distance_unit import DistanceUnit
 
 class Constants:
-    MIN_TEMPERATURE = 20        # En celsus
-    MAX_TEMPERATURE = 35        # En celsus
+    MIN_TEMPERATURE = 20        # En celsius
+    MAX_TEMPERATURE = 35        # En celsius
     MIN_DISTANCE = 0            # En centimetre
     MAX_DISTANCE = 14           # En centimetre
     MAX_DISTANCE_MEASURING = 50 # En centimetre
@@ -29,4 +29,4 @@ class Constants:
     CCW_STEP = (0x01,0x02,0x04,0x08) # Define power supply order for rotating anticlockwise 
     CW_STEP = (0x08,0x04,0x02,0x01)  # Define power supply order for rotating clockwise
 
-    PID_SETUP = (100.0, 0.0, 0.0)
+    PID_SETUP = (50.0, 0.0, 0.0)
