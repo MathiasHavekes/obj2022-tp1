@@ -1,5 +1,3 @@
-from math import dist
-from turtle import distance, update
 from models.enum_control_state import ControlState
 from models.enum_motor_direction import MotorDirection
 from models.motor_status import MotorStatus
