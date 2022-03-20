@@ -1,9 +1,8 @@
+from config import Constants
 from threading import Thread
 from time import sleep
 import tkinter as tk
 from tkinter import ttk
-
-TIME_BETWEEN_UPDATE = 0.001
 
 class MotorPercentageFrame(ttk.LabelFrame):
     def __init__(self, container):
@@ -49,4 +48,4 @@ class MotorPercentageFrame(ttk.LabelFrame):
                 self.percentage_bar['value'] += 1
             elif not open_direction:
                 self.percentage_bar['value'] -= 1
-            sleep(TIME_BETWEEN_UPDATE)
+            sleep(Constants.TIME_BETWEEN_PERCENTAGE_BAR_UPDATE)

@@ -2,10 +2,7 @@ from threading import Thread
 import tkinter as tk
 import logging
 
-# Import enums
-from models.enum_control_state import ControlState
-from models.enum_temperature_units import TemperatureUnits
-from models.enum_distance_units import DistanceUnits
+from config import Constants
 
 # Import models
 from models.temperature import Temperature
@@ -20,25 +17,18 @@ from controllers.temperature_controller import TemperatureController
 from controllers.distance_controller import DistanceController
 from controllers.motor_controller import MotorController
 
-DEFAULT_TEMPERATURE_UNIT = TemperatureUnits.CELSUS
-DEFAULT_DISTANCE_UNIT = DistanceUnits.CENTIMETER
-DEFAULT_MOTOR_STATE = ControlState.AUTOMATIC
-
-DEFAULT_MIN_VALUE = 0
-DEFAULT_MAX_VALUE = 15
-
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
         self.title('Controller')
 
-        # Create the model
-        self.temperature = Temperature(0, DEFAULT_TEMPERATURE_UNIT)
-        self.distance = Distance(0, DEFAULT_DISTANCE_UNIT, DEFAULT_MIN_VALUE, DEFAULT_MAX_VALUE)
-        self.motor_status = MotorStatus(DEFAULT_MOTOR_STATE, 0, 0)
+        # Create the models
+        self.temperature = Temperature(0, Constants.DEFAULT_TEMPERATURE_UNIT)
+        self.distance = Distance(0, Constants.DEFAULT_DISTANCE_UNIT)
+        self.motor_status = MotorStatus(Constants.DEFAULT_MOTOR_STATE, 0, 0)
 
-        # Create the views
+        # Create the view
         self.view = View(self)
         self.view.grid(row=0, column=0, padx=15, pady=15)
 
@@ -53,7 +43,7 @@ class App(tk.Tk):
         update_distance_thread = Thread(target = self.distance_controller.update_distance_thread, args = (lambda : self.stop_threads, ))
         update_distance_thread.start()
 
-        self.motor_controller = MotorController(self.motor_status, self.temperature, self.view)
+        self.motor_controller = MotorController(self.motor_status, self.temperature, self.distance, self.view)
         update_motor_status_thread = Thread(target = self.motor_controller.state_machine_thread, args = (lambda : self.stop_threads, ))
         update_motor_status_thread.start()
 

@@ -1,14 +1,15 @@
-from models.enum_temperature_units import TemperatureUnits
+from models.enum_temperature_unit import TemperatureUnit
+from models.temperature import Temperature
+from views.main_window import View
+from config import Constants
 import RPi.GPIO as GPIO
 import time
 import math
 import logging
 from .ADCDevice import *
 
-TIME_BETWEEN_UPDATE = 1
-
 class TemperatureController():
-    def __init__(self, temperature, view):
+    def __init__(self, temperature: Temperature, view: View):
         self.temperature_model = temperature
         self.old_temperature = 0
         self.view = view
@@ -43,13 +44,13 @@ class TemperatureController():
 
             if self.old_temperature != temperature:
                 unitValue = self.temperature_model.unit
-                unit = TemperatureUnits(unitValue).name.lower()
+                unit = TemperatureUnit(unitValue).name.lower()
                 logging.info('Nouvelle temperature : %s %s', temperature, unit)
                 self.old_temperature = temperature
             
             self.temperature_model.value = temperature
             self.view.update_temperature(temperature)
 
-            time.sleep(TIME_BETWEEN_UPDATE)
+            time.sleep(Constants.TIME_BETWEEN_TEMPERATURE_UPDATE)
         self.adc.close()
         GPIO.cleanup
