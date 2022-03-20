@@ -9,7 +9,7 @@ from config import Constants
 from .PID import PID
 import RPi.GPIO as GPIO
 import logging
-import time 
+import time
 
 class MotorController():
     def __init__(self, motor_status: MotorStatus, 
@@ -34,22 +34,22 @@ class MotorController():
 
     # As for four phase stepping motor, four steps is a cycle. the function is used to drive the stepping motor clockwise or anticlockwise to take four steps    
     def move_one_period(self, direction, ms):    
-        for j in range(0,4,1):      # Cycle for power supply order
-            for i in range(0,4,1):  # Assign to each pin
+        for j in range(0, 4, 1):      # Cycle for power supply order
+            for i in range(0, 4, 1):  # Assign to each pin
                 if (direction == 1):# Power supply order clockwise
-                    GPIO.output(Constants.MOTOR_PINS[i],((Constants.CCW_STEP[j] == 1<<i) and GPIO.HIGH or GPIO.LOW))
+                    GPIO.output(Constants.MOTOR_PINS[i],((Constants.CCW_STEP[j] == 1 << i) and GPIO.HIGH or GPIO.LOW))
                 else :              # Power supply order anticlockwise
-                    GPIO.output(Constants.MOTOR_PINS[i],((Constants.CW_STEP[j] == 1<<i) and GPIO.HIGH or GPIO.LOW))
-            if(ms<3): # The delay can not be less than 3ms, otherwise it will exceed speed limit of the motor
+                    GPIO.output(Constants.MOTOR_PINS[i],((Constants.CW_STEP[j] == 1 << i) and GPIO.HIGH or GPIO.LOW))
+            if(ms < 3): # The delay can not be less than 3ms, otherwise it will exceed speed limit of the motor
                 ms = 3
-            time.sleep(ms*0.001)    
+            time.sleep(ms * 0.001)    
         
     def move_steps(self, direction, ms, steps):
         for i in range(steps):
             self.move_one_period(direction, ms)
         
     def motor_stop(self):
-        for i in range(0,4,1):
+        for i in range(0, 4,1 ):
             GPIO.output(Constants.MOTOR_PINS[i], GPIO.LOW)
             
     def update_motor_state(self, new_motor_state: MotorStatus):
@@ -104,7 +104,6 @@ class MotorController():
 
             if direction != MotorDirection.ARRET.value: self.move_steps(direction, 3, speed)
 
-            time.sleep(0.5)
         GPIO.cleanup
 
     def config(self):
