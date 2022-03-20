@@ -48,6 +48,8 @@ class DistanceController():
 
             distance = self.get_distance() 
 
+            if distance < Constants.MIN_DISTANCE or distance > Constants.MAX_DISTANCE: continue
+
             if self.__old_distance != distance: 
                 self.__old_distance = distance
             else: continue
@@ -56,7 +58,7 @@ class DistanceController():
             self.__view.update_distance(distance)
 
             distance_percentage = Utils.castValue(distance, 0, 100, 
-                Constants.MAX_DISTANCE, Constants.MIN_DISTANCE)
+                Constants.MIN_DISTANCE, Constants.MAX_DISTANCE)
             self.__view.update_open_percentage(distance_percentage)
 
             time.sleep(Constants.TIME_BETWEEN_DISTANCE_UPDATE)

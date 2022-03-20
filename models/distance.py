@@ -1,5 +1,4 @@
 import logging
-from config import Constants
 from models.enum_distance_unit import DistanceUnit
 
 class Distance:
@@ -17,7 +16,6 @@ class Distance:
 
     @value.setter
     def value(self, new_value: int):
-        if new_value < Constants.MAX_DISTANCE or new_value > Constants.MIN_DISTANCE: return
         unit = DistanceUnit(self.__unit).name.lower()
         logging.info('Distance d\'ouverture : %s %s', new_value, unit, )
         self.__value = new_value
