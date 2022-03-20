@@ -1,3 +1,4 @@
+from models.enum_motor_direction import MotorDirection
 import tkinter as tk
 from tkinter import ttk
 
@@ -21,4 +22,5 @@ class MotorStatusFrame(ttk.LabelFrame):
         self.speed_value_label['text'] = speed
     
     def update_rotation_direction(self, direction):
-        self.direction_value_label['text'] = direction
+        direction_name = MotorDirection(direction).name.lower()
+        self.direction_value_label['text'] = direction_name

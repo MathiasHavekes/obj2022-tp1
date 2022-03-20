@@ -1,28 +1,41 @@
+from math import dist
+from turtle import distance, update
 from models.enum_control_state import ControlState
+from models.enum_motor_direction import MotorDirection
 from models.motor_status import MotorStatus
 from models.temperature import Temperature
 from models.distance import Distance
+from utils import Utils
 from views.main_window import View
 from config import Constants
+from .PID import PID
 import RPi.GPIO as GPIO
+import logging
 import time 
 
 class MotorController():
     def __init__(self, motor_status: MotorStatus, 
     temperature: Temperature, distance: Distance, view: View):
-        self.motor_status_model = motor_status
-        self.temperature_model = temperature
-        self.distance_model = distance
-        self.view = view
+        self.__motor_status_model = motor_status
+        self.__temperature_model = temperature
+        self.__distance_model = distance
+        self.__open_percentage = Constants.DEFAULT_DOOR_OPEN_PERCENTAGE
+        self.__view = view
+        self.__target = 0.0
         self.setup()
 
-    def setup(self):    
+    def setup(self): 
         GPIO.setmode(GPIO.BOARD)    
         for pin in Constants.MOTOR_PINS:
             GPIO.setup(pin,GPIO.OUT)
 
+        self.pid = PID(
+            Constants.PID_SETUP[0], 
+            Constants.PID_SETUP[1], 
+            Constants.PID_SETUP[2])
+
     # As for four phase stepping motor, four steps is a cycle. the function is used to drive the stepping motor clockwise or anticlockwise to take four steps    
-    def moveOnePeriod(self, direction, ms):    
+    def move_one_period(self, direction, ms):    
         for j in range(0,4,1):      # Cycle for power supply order
             for i in range(0,4,1):  # Assign to each pin
                 if (direction == 1):# Power supply order clockwise
@@ -33,35 +46,74 @@ class MotorController():
                 ms = 3
             time.sleep(ms*0.001)    
         
-    def moveSteps(self, direction, ms, steps):
+    def move_steps(self, direction, ms, steps):
         for i in range(steps):
-            self.moveOnePeriod(direction, ms)
+            self.move_one_period(direction, ms)
         
-    def motorStop(self):
+    def motor_stop(self):
         for i in range(0,4,1):
-            GPIO.output(Constants.MOTOR_PINS[i],GPIO.LOW)
+            GPIO.output(Constants.MOTOR_PINS[i], GPIO.LOW)
             
-    def loop(self):
-        self.moveSteps(1,3,1024)  # Rotating 360 deg clockwise, a total of 2048 steps in a circle, 512 cycles
-        time.sleep(0.5)
-        self.moveSteps(0,3,1024)  # Rotating 360 deg anticlockwise
-        time.sleep(0.5)
+    def update_motor_state(self, new_motor_state: MotorStatus):
+        self.__motor_status_model.state = new_motor_state
 
-    def update_motor_state(self, new_motor_state):
-        self.motor_status_model.state = new_motor_state
-        print(new_motor_state)
+    def update_open_percentage(self, new_open_percentage: int):
+        logging.info('Valeur d\'ouverture de porte entree : %s', new_open_percentage)
+        self.__open_percentage = new_open_percentage
         
     def state_machine_thread(self, stop):
         while True:
+            destination = 0.0
+
             if stop(): break
-            elif self.motor_status_model.state == ControlState.AUTOMATIC:
-                temperature = self.temperature_model.value
-                #self.calculateOpenDistanceWithTemp(temperature)
-                continue
-            elif self.motor_status_model.state == ControlState.MANUAL:
-                continue
-            elif self.motor_status_model.state == ControlState.OPEN_DOOR:
-                continue
-            elif self.motor_status_model.state == ControlState.CLOSE_DOOR:
-                continue
+            elif self.__motor_status_model.state == ControlState.AUTOMATIQUE:
+                temperature = self.__temperature_model.value
+                destination = round(Utils.castValue(
+                    temperature,
+                    Constants.MIN_DISTANCE,
+                    Constants.MAX_DISTANCE,
+                    Constants.MIN_TEMPERATURE,
+                    Constants.MAX_TEMPERATURE))
+            elif self.__motor_status_model.state == ControlState.MANUEL:
+                destination = round(Utils.castValue(
+                    self.__open_percentage, 
+                    Constants.MIN_DISTANCE, 
+                    Constants.MAX_DISTANCE, 
+                    100, 0))
+            elif self.__motor_status_model.state == ControlState.OUVRIR_PORTE:
+                destination = Constants.MAX_DISTANCE
+            elif self.__motor_status_model.state == ControlState.FERMER_PORTE:
+                destination = Constants.MIN_DISTANCE
+
+            self.pid.SetPoint = destination
+            distance = self.__distance_model.value
+            self.pid.update(distance)
+            speed = int(self.pid.output)
+            direction = MotorDirection.ARRET.value
+
+            if speed < 0:
+                self.__motor_status_model.direction = MotorDirection.BAS
+                direction = self.__motor_status_model.direction.value
+            elif speed > 0:
+                self.__motor_status_model.direction = MotorDirection.HAUT
+                direction = self.__motor_status_model.direction.value
+            else:
+                self.__motor_status_model.direction = MotorDirection.ARRET
+
+            speed = abs(speed)
+
+            self.__view.update_rotation_speed(speed)
+            self.__view.update_rotation_direction(direction)
+
+            if direction != MotorDirection.ARRET.value: self.move_steps(direction, 3, speed)
+
+            time.sleep(0.5)
         GPIO.cleanup
+
+    def config(self):
+        global pid_target
+        self.pid.SetPoint = self.__target
+        pid_target = self.pid.SetPoint
+        self.pid.setKp(Constants.PID_SETUP[0])
+        self.pid.setKi(Constants.PID_SETUP[1])
+        self.pid.setKd(Constants.PID_SETUP[2])

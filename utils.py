@@ -5,9 +5,9 @@ class Utils:
     a = (y_b - y_a) / (x_b - x_a)
     b = -(ax - y)
     """
-    def castToPercentage(distance, max_value, min_value) -> int:
-        gradient = 100 / (max_value - min_value)
+    def castValue(x: int, y_a: int, y_b: int, x_b: int, x_a: int) -> int:
+        gradient = (y_b - y_a) / (x_b - x_a)
 
-        intercept = - (gradient * max_value - 100)
+        intercept = - (gradient * x_b - 100)
 
-        return round(gradient * distance + intercept)
+        return round(gradient * x + intercept)

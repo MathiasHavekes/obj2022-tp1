@@ -1,4 +1,5 @@
 from tkinter import Toplevel, ttk
+from models.enum_motor_direction import MotorDirection
 from .information_frame import InformationFrame
 from .motor_status_frame import MotorStatusFrame
 from .control_frame import ControlFrame
@@ -29,26 +30,26 @@ class View(ttk.Frame):
         self.log_button.grid(row=3, column=0, columnspan=3, padx=20, pady=20)
         self.log_button.bind('<Button>', self.log_button_pressed)
         
-    def update_open_percentage(self, open_percentage):
+    def update_open_percentage(self, open_percentage: int):
         self.motor_percentage_view.update_open_percentage(open_percentage)
     
-    def update_temperature(self, temperature):
+    def update_temperature(self, temperature: float):
         self.information_view.update_temperature(temperature)
 
-    def update_distance(self, distance):
+    def update_distance(self, distance: float):
         self.information_view.update_distance(distance)
         
-    def update_rotation_speed(self, speed):
-        self.motor_status_view = speed
+    def update_rotation_speed(self, speed: int):
+        self.motor_status_view.update_rotation_speed(speed)
     
-    def update_rotation_direction(self, direction):
-        self.motor_status_view = direction
+    def update_rotation_direction(self, direction: MotorDirection):
+        self.motor_status_view.update_rotation_direction(direction)
 
     def set_motor_state(self, motor_state):
         self.__parent.motor_controller.update_motor_state(motor_state)
 
     def open_door_with_percentage(self, open_percentage):
-        self.update_open_percentage(open_percentage)
+        self.__parent.motor_controller.update_open_percentage(open_percentage)
 
     def log_button_pressed(self, event):
         popup = Toplevel(self.__parent)

@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 class ControlState(Enum):
-    AUTOMATIC = auto()
-    MANUAL = auto()
-    OPEN_DOOR = auto()
-    CLOSE_DOOR = auto()
+    AUTOMATIQUE = auto()
+    MANUEL = auto()
+    OUVRIR_PORTE = auto()
+    FERMER_PORTE = auto()

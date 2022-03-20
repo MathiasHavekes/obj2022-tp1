@@ -1,18 +1,16 @@
-from models.enum_distance_unit import DistanceUnit
 from models.distance import Distance
 from views.main_window import View
 from config import Constants
 from utils import Utils
 import RPi.GPIO as GPIO
 import time
-import logging
 
 class DistanceController():
     def __init__(self, distance: Distance, view: View):
-        self.distance_model = distance
-        self.view = view
-        self.old_distance = 0
-        self.time_out = Constants.MAX_DISTANCE_MEASURING * 60
+        self.__distance_model = distance
+        self.__view = view
+        self.__old_distance = 0
+        self.__time_out = Constants.MAX_DISTANCE_MEASURING * 60
         self.setup()
 
     def setup(self):
@@ -24,12 +22,12 @@ class DistanceController():
         t0 = time.time()
 
         while(GPIO.input(pin) != level):
-            if((time.time() - t0) > self.time_out * 0.000001):
+            if((time.time() - t0) > self.__time_out * 0.000001):
                 return 0
         t0 = time.time()
 
         while(GPIO.input(pin) == level):
-            if((time.time() - t0) > self.time_out * 0.000001):
+            if((time.time() - t0) > self.__time_out * 0.000001):
                 return 0
         pulse_time = (time.time() - t0) * 1000000
         
@@ -49,23 +47,17 @@ class DistanceController():
             if stop(): break
 
             distance = self.get_distance() 
-            max_distance = Constants.MAX_DISTANCE
-            min_distance = Constants.MIN_DISTANCE
 
-            if distance > max_distance or distance < min_distance: continue
-
-            distance_percentage = Utils.castToPercentage(distance, max_distance, min_distance)
-
-            if self.old_distance != distance:
-                unitValue = self.distance_model.unit
-                unit = DistanceUnit(unitValue).name.lower()
-                logging.info('Nouvelle distance d\'ouverture : %s %s ~ %s%%', 
-                distance, unit, distance_percentage)
-                self.old_distance = distance
+            if self.__old_distance != distance: 
+                self.__old_distance = distance
+            else: continue
             
-            self.distance_model.value = distance
-            self.view.update_distance(distance)
-            self.view.update_open_percentage(distance_percentage)
+            self.__distance_model.value = distance
+            self.__view.update_distance(distance)
+
+            distance_percentage = Utils.castValue(distance, 0, 100, 
+                Constants.MAX_DISTANCE, Constants.MIN_DISTANCE)
+            self.__view.update_open_percentage(distance_percentage)
 
             time.sleep(Constants.TIME_BETWEEN_DISTANCE_UPDATE)
         GPIO.cleanup

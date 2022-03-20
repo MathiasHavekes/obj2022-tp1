@@ -11,7 +11,8 @@ class Constants:
 
     DEFAULT_TEMPERATURE_UNIT = TemperatureUnit.CELSUS
     DEFAULT_DISTANCE_UNIT = DistanceUnit.CENTIMETRE
-    DEFAULT_MOTOR_STATE = ControlState.AUTOMATIC
+    DEFAULT_MOTOR_STATE = ControlState.AUTOMATIQUE
+    DEFAULT_DOOR_OPEN_PERCENTAGE = 50
 
     TIME_BETWEEN_TEMPERATURE_UPDATE = 1        # En seconde
     TIME_BETWEEN_DISTANCE_UPDATE = 1           # En seconde
@@ -27,3 +28,5 @@ class Constants:
     
     CCW_STEP = (0x01,0x02,0x04,0x08) # Define power supply order for rotating anticlockwise 
     CW_STEP = (0x08,0x04,0x02,0x01)  # Define power supply order for rotating clockwise
+
+    PID_SETUP = (2.0, 0.0, 0.0)
