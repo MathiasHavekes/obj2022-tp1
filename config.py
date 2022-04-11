@@ -17,6 +17,7 @@ class Constants:
     TIME_BETWEEN_TEMPERATURE_UPDATE = 1        # En seconde
     TIME_BETWEEN_DISTANCE_UPDATE = 1           # En seconde
     TIME_BETWEEN_PERCENTAGE_BAR_UPDATE = 0.001 # En seconde
+    TIME_BETWEEN_API_POST = 60                 # En seconde
 
     SOUND_SPEED = 340 # En m/s
 
@@ -29,4 +30,8 @@ class Constants:
     CCW_STEP = (0x01,0x02,0x04,0x08) # Define power supply order for rotating anticlockwise 
     CW_STEP = (0x08,0x04,0x02,0x01)  # Define power supply order for rotating clockwise
 
-    PID_SETUP = (50.0, 0.0, 0.0)
+    PID_SETUP = (20.0, 0.0, 0.0)
+
+    IOT_HUB_URL = 'HostName=iotObjectHub.azure-devices.net;DeviceId=tempsensor;SharedAccessKey=kudN1EiFDqPDpy98iYN4ZC8mTiLFGCMMcqA840r29r0='
+    IOT_HUB_MESSAGE_CONTENT_ENCODING = 'utf-8'
+    IOT_HUB_MESSAGE_CONTENT_TYPE = 'application/json'

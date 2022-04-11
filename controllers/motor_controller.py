@@ -6,9 +6,8 @@ from models.distance import Distance
 from utils import Utils
 from views.main_window import View
 from config import Constants
-from .PID import PID
+from .pid import PID
 import RPi.GPIO as GPIO
-import logging
 import time
 
 class MotorController():
@@ -17,7 +16,6 @@ class MotorController():
         self.__motor_status_model = motor_status
         self.__temperature_model = temperature
         self.__distance_model = distance
-        self.__open_percentage = Constants.DEFAULT_DOOR_OPEN_PERCENTAGE
         self.__view = view
         self.__target = 0.0
         self.setup()
@@ -56,8 +54,7 @@ class MotorController():
         self.__motor_status_model.state = new_motor_state
 
     def update_open_percentage(self, new_open_percentage: int):
-        logging.info('Valeur d\'ouverture de porte entree : %s', new_open_percentage)
-        self.__open_percentage = new_open_percentage
+        self.__motor_status_model.target = new_open_percentage
         
     def state_machine_thread(self, stop):
         while True:
@@ -73,8 +70,9 @@ class MotorController():
                     Constants.MIN_TEMPERATURE,
                     Constants.MAX_TEMPERATURE))
             elif self.__motor_status_model.state == ControlState.MANUEL:
+                open_percentage = self.__motor_status_model.target
                 destination = round(Utils.castValue(
-                    self.__open_percentage, 
+                    open_percentage, 
                     Constants.MIN_DISTANCE, 
                     Constants.MAX_DISTANCE, 
                     0, 100))

@@ -1,11 +1,10 @@
-from models.enum_temperature_unit import TemperatureUnit
 from models.temperature import Temperature
 from views.main_window import View
 from config import Constants
 import RPi.GPIO as GPIO
 import time
 import math
-from .ADCDevice import *
+from .adc_device import *
 
 class TemperatureController():
     def __init__(self, temperature: Temperature, view: View):

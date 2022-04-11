@@ -7,7 +7,10 @@
 ### Etapes d'utilisation :
 
 ```
-Executer la commande : pip install tkinter
+Executer la commande : pip3 install tkinter
+```
+```
+Executer la commande : pip3 install azure-iot-device
 ```
 ```
 Activer i2c

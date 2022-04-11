@@ -2,8 +2,6 @@ from threading import Thread
 import tkinter as tk
 import logging
 
-from config import Constants
-
 # Import models
 from models.temperature import Temperature
 from models.distance import Distance
@@ -16,6 +14,7 @@ from views.main_window import View
 from controllers.temperature_controller import TemperatureController
 from controllers.distance_controller import DistanceController
 from controllers.motor_controller import MotorController
+from controllers.iot_hub_controller import IotHubController
 
 class App(tk.Tk):
     def __init__(self):
@@ -24,31 +23,35 @@ class App(tk.Tk):
         self.title('Controller')
 
         # Create the models
-        self.temperature = Temperature(0, Constants.DEFAULT_TEMPERATURE_UNIT)
-        self.distance = Distance(0, Constants.DEFAULT_DISTANCE_UNIT)
-        self.motor_status = MotorStatus(Constants.DEFAULT_MOTOR_STATE, 0, 0)
+        self.__temperature = Temperature()
+        self.__distance = Distance()
+        self.__motor_status = MotorStatus()
 
         # Create the view
-        self.view = View(self)
-        self.view.grid(row=0, column=0, padx=15, pady=15)
+        self.__view = View(self)
+        self.__view.grid(row=0, column=0, padx=15, pady=15)
 
         # Create and start the controllers threads
-        self.stop_threads = False
+        self.__stop_threads = False
 
-        self.temperature_controller = TemperatureController(self.temperature, self.view)
-        update_temperature_thread = Thread(target = self.temperature_controller.update_temperature_thread, args = (lambda : self.stop_threads, ))
+        self.__temperature_controller = TemperatureController(self.__temperature, self.__view)
+        update_temperature_thread = Thread(target = self.__temperature_controller.update_temperature_thread, args = (lambda : self.__stop_threads, ))
         update_temperature_thread.start()
         
-        self.distance_controller = DistanceController(self.distance, self.view)
-        update_distance_thread = Thread(target = self.distance_controller.update_distance_thread, args = (lambda : self.stop_threads, ))
+        self.__distance_controller = DistanceController(self.__distance, self.__view)
+        update_distance_thread = Thread(target = self.__distance_controller.update_distance_thread, args = (lambda : self.__stop_threads, ))
         update_distance_thread.start()
 
-        self.motor_controller = MotorController(self.motor_status, self.temperature, self.distance, self.view)
-        update_motor_status_thread = Thread(target = self.motor_controller.state_machine_thread, args = (lambda : self.stop_threads, ))
+        self.__motor_controller = MotorController(self.__motor_status, self.__temperature, self.__distance, self.__view)
+        update_motor_status_thread = Thread(target = self.__motor_controller.state_machine_thread, args = (lambda : self.__stop_threads, ))
         update_motor_status_thread.start()
 
+        self.__iot_hub_controller = IotHubController(self.__temperature, self.__distance, self.__motor_status)
+        iot_hub_update_thread = Thread(target = self.__iot_hub_controller.iot_hub_update_thread, args = (lambda : self.__stop_threads, ))
+        iot_hub_update_thread.start()
+
 def callback():
-    app.stop_threads = True
+    app.__stop_threads = True
     app.destroy()
 
 if __name__ == '__main__':

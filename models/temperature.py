@@ -1,8 +1,9 @@
 import logging
+from config import Constants
 from models.enum_temperature_unit import TemperatureUnit
 
 class Temperature:
-    def __init__(self, value: int, unit: TemperatureUnit):
+    def __init__(self, value = 0, unit = Constants.DEFAULT_TEMPERATURE_UNIT):
         self.__value = value
         self.__unit = unit
 
