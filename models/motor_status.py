@@ -1,6 +1,6 @@
 import logging
-from models.enum_control_state import ControlState
-from models.enum_motor_direction import MotorDirection
+from models.enums.enum_control_state import ControlState
+from models.enums.enum_motor_direction import MotorDirection
 from config import Constants
 
 class MotorStatus:

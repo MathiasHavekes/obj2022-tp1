@@ -1,7 +1,7 @@
 from models.temperature import Temperature
 from models.distance import Distance
-from models.enum_temperature_unit import TemperatureUnit
-from models.enum_distance_unit import DistanceUnit
+from models.enums.enum_temperature_unit import TemperatureUnit
+from models.enums.enum_distance_unit import DistanceUnit
 import tkinter as tk
 from tkinter import ttk
 

@@ -1,4 +1,4 @@
-from models.enum_motor_direction import MotorDirection
+from models.enums.enum_motor_direction import MotorDirection
 import tkinter as tk
 from tkinter import ttk
 

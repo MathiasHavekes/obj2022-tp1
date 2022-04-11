@@ -1,6 +1,6 @@
-from models.enum_control_state import ControlState
-from models.enum_temperature_unit import TemperatureUnit
-from models.enum_distance_unit import DistanceUnit
+from models.enums.enum_control_state import ControlState
+from models.enums.enum_temperature_unit import TemperatureUnit
+from models.enums.enum_distance_unit import DistanceUnit
 
 class Constants:
     MIN_TEMPERATURE = 20        # En celsius

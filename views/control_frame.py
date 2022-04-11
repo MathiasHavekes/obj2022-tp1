@@ -1,4 +1,4 @@
-from models.enum_control_state import ControlState
+from models.enums.enum_control_state import ControlState
 from config import Constants
 import tkinter as tk
 from tkinter import ttk

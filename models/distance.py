@@ -1,6 +1,6 @@
 import logging
 from config import Constants
-from models.enum_distance_unit import DistanceUnit
+from models.enums.enum_distance_unit import DistanceUnit
 
 class Distance:
     def __init__(self, value = 0, unit = Constants.DEFAULT_DISTANCE_UNIT):
