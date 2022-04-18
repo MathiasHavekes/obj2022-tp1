@@ -1,17 +1,19 @@
 import json
 import uuid
 from config import Constants
-from models.dtos.temperature_dto import TemperatureDto
+from models.distance import Distance
+from models.dtos.temperature_distance_dto import TemperatureDistanceDto
 from models.temperature import Temperature
 from azure.iot.device import Message, IoTHubDeviceClient
 
-class TemperatureApi:
-    def __init__(self, temperature: Temperature, device_client = IoTHubDeviceClient):
+class TemperatureDistanceApi:
+    def __init__(self, temperature: Temperature, distance: Distance, device_client = IoTHubDeviceClient):
        self.__temperature_model = temperature
+       self.__distance_model = distance
        self.__device_client = device_client
 
-    def post_temperature(self):
-        current_temperature = TemperatureDto(self.__temperature_model)
+    def post_temperature_distance(self):
+        current_temperature = TemperatureDistanceDto(self.__temperature_model, self.__distance_model)
 
         message = Message(json.dumps(current_temperature.__dict__))
         message.message_id = uuid.uuid4()

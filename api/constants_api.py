@@ -18,5 +18,3 @@ class ConstantsApi:
         message.custom_properties["tornado-warning"] = "yes"
 
         self.__device_client.send_message(message)
-
-        print(json.dumps(constants_setup.__dict__))

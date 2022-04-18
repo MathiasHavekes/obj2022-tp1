@@ -25,7 +25,7 @@ class Constants:
     TRIG_PIN = 16
     ECHO_PIN = 18
 
-    MOTOR_PINS = (22, 32, 36, 38)    # Define pins connected to four phase ABCD of stepper motor
+    MOTOR_PINS = (31, 33, 35, 37)   # Define pins connected to four phase ABCD of stepper motor
     
     CCW_STEP = (0x01,0x02,0x04,0x08) # Define power supply order for rotating anticlockwise 
     CW_STEP = (0x08,0x04,0x02,0x01)  # Define power supply order for rotating clockwise
