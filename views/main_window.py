@@ -1,6 +1,7 @@
 from tkinter import Toplevel, ttk
 from models.enums.enum_motor_direction import MotorDirection
 from models.enums.enum_control_state import ControlState
+from models.motor_status import MotorStatus
 from models.temperature import Temperature
 from models.distance import Distance
 from .information_frame import InformationFrame
@@ -48,11 +49,8 @@ class View(ttk.Frame):
     def update_rotation_direction(self, direction: MotorDirection):
         self.motor_status_view.update_rotation_direction(direction)
 
-    def set_motor_state(self, motor_state: ControlState):
-        self.__parent.motor_controller.update_motor_state(motor_state)
-
-    def open_door_with_percentage(self, open_percentage: int):
-        self.__parent.motor_controller.update_open_percentage(open_percentage)
+    def set_motor_state(self, motor_state: ControlState, opening_percentage: int):
+        self.__parent.motor_controller.update_motor_state(motor_state, opening_percentage)
 
     def log_button_pressed(self, event):
         popup = Toplevel(self.__parent)

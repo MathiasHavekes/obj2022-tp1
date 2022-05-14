@@ -18,6 +18,7 @@ class Constants:
     TIME_BETWEEN_DISTANCE_UPDATE = 1           # En seconde
     TIME_BETWEEN_PERCENTAGE_BAR_UPDATE = 0.001 # En seconde
     TIME_BETWEEN_API_POST = 60                 # En seconde
+    TIME_BETWEEN_CONTROL_CHECK = 1             # En seconde
 
     SOUND_SPEED = 340 # En m/s
 
@@ -36,5 +37,5 @@ class Constants:
     IOT_HUB_MESSAGE_CONTENT_ENCODING = 'utf-8'
     IOT_HUB_MESSAGE_CONTENT_TYPE = 'application/json'
 
-    SQLITE_DATABASE_FILE = './database/sqlDatabase'
+    SQLITE_DATABASE_FILE = './database/sqlDatabase.db'
     DEVICE_ID = "tempsensor"

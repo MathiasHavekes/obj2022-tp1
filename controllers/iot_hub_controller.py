@@ -1,10 +1,12 @@
 from datetime import datetime
 import time
 from api.constants_api import ConstantsApi
+from api.control_api import ControlApi
 from api.motor_status_api import MotorStatusApi
 from api.temperature_distance_api import TemperatureDistanceApi
 from config import Constants
 from controllers.internal_database import InternalDatabase
+from models.control import Control
 from models.enums.enum_control_state import ControlState
 from models.motor_status import MotorStatus
 from models.temperature import Temperature
@@ -12,15 +14,17 @@ from models.distance import Distance
 from azure.iot.device import IoTHubDeviceClient
 
 class IotHubController:
-    def __init__(self, temperature: Temperature, distance: Distance, motor_status: MotorStatus):
+    def __init__(self, temperature: Temperature, distance: Distance, motor_status: MotorStatus, control: Control):
         self.__device_client = IoTHubDeviceClient.create_from_connection_string(Constants.IOT_HUB_URL)
         self.__device_client.connect()
         self.__internal_database = InternalDatabase()
         self.__device_client.on_message_received = self.message_handler
         self.__motor_status = motor_status
+        self.__control = control
         self.__temperature_distance_api = TemperatureDistanceApi(temperature, distance, self.__device_client, self.__internal_database)
         self.__motor_status_api = MotorStatusApi(motor_status, self.__device_client, self.__internal_database)
         self.__constants_api = ConstantsApi(self.__device_client, self.__internal_database)
+        self.__control_api = ControlApi(self.__control, self.__device_client, self.__internal_database)
 
     def iot_hub_update_thread(self, stop):
         self.__constants_api.post_constants_setup()
@@ -32,6 +36,14 @@ class IotHubController:
             self.__motor_status_api.post_motor_status()
 
             time.sleep(Constants.TIME_BETWEEN_API_POST)
+    
+    def iot_hub_update_control_thread(self, stop):
+        while True:
+            if stop(): break
+            if(self.__control.state_changed):
+                self.__control_api.post_control_status()
+                self.__control.state_changed = False
+            time.sleep(Constants.TIME_BETWEEN_CONTROL_CHECK)
     
     def message_handler(self, message):
         try:

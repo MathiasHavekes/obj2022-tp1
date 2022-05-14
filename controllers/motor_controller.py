@@ -1,3 +1,5 @@
+
+from models.control import Control
 from models.enums.enum_control_state import ControlState
 from models.enums.enum_motor_direction import MotorDirection
 from models.motor_status import MotorStatus
@@ -11,9 +13,10 @@ import RPi.GPIO as GPIO
 import time
 
 class MotorController():
-    def __init__(self, motor_status: MotorStatus, 
+    def __init__(self, motor_status: MotorStatus, control: Control,
     temperature: Temperature, distance: Distance, view: View):
         self.__motor_status_model = motor_status
+        self.__control = control
         self.__temperature_model = temperature
         self.__distance_model = distance
         self.__view = view
@@ -50,7 +53,8 @@ class MotorController():
         for i in range(0, 4,1 ):
             GPIO.output(Constants.MOTOR_PINS[i], GPIO.LOW)
             
-    def update_motor_state(self, new_motor_state: MotorStatus):
+    def update_motor_state(self, new_motor_state: ControlState, opening_percentage: int):
+        self.__control.update(new_motor_state, opening_percentage)
         self.__motor_status_model.state = new_motor_state
 
     def update_open_percentage(self, new_open_percentage: int):

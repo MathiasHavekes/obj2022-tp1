@@ -34,11 +34,12 @@ class ControlFrame(ttk.LabelFrame):
 
     def automatic_button_pressed(self, event):
         new_motor_state = ControlState.AUTOMATIQUE
-        self.container.set_motor_state(new_motor_state)
+        self.container.set_motor_state(new_motor_state, -1)
 
     def manuel_button_pressed(self, event):
         new_motor_state = ControlState.MANUEL
-        self.container.set_motor_state(new_motor_state)
+        opening_percentage = int(self.percentage_entry.get())
+        self.container.set_motor_state(new_motor_state, opening_percentage)
 
     def entry_key_released(self, event):
         user_entry = self.percentage_entry.get()
@@ -49,12 +50,10 @@ class ControlFrame(ttk.LabelFrame):
 
         if user_entry > 100 or user_entry < 0: return
 
-        self.container.open_door_with_percentage(user_entry)
-
     def open_button_pressed(self, event):
         new_motor_state = ControlState.OUVRIR_PORTE
-        self.container.set_motor_state(new_motor_state)
+        self.container.set_motor_state(new_motor_state, 100)
 
     def close_button_pressed(self, event):
         new_motor_state = ControlState.FERMER_PORTE
-        self.container.set_motor_state(new_motor_state)
+        self.container.set_motor_state(new_motor_state, 0)
