@@ -35,3 +35,6 @@ class Constants:
     IOT_HUB_URL = 'HostName=iotObjectHub.azure-devices.net;DeviceId=tempsensor;SharedAccessKey=kudN1EiFDqPDpy98iYN4ZC8mTiLFGCMMcqA840r29r0='
     IOT_HUB_MESSAGE_CONTENT_ENCODING = 'utf-8'
     IOT_HUB_MESSAGE_CONTENT_TYPE = 'application/json'
+
+    SQLITE_DATABASE_FILE = './database/sqlDatabase'
+    DEVICE_ID = "tempsensor"
