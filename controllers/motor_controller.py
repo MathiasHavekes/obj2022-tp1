@@ -102,6 +102,7 @@ class MotorController():
 
             speed = abs(speed)
 
+            self.__motor_status_model.speed = speed
             self.__view.update_rotation_speed(speed)
             self.__view.update_rotation_direction(direction)
 
