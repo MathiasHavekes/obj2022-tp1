@@ -55,7 +55,7 @@ class IotHubController:
             self.__motor_status.state = ControlState[state]
             target = messages.get("target")
             self.__motor_status.target = target
-            self.__internal_database.insert_into_control(Constants.DEVICE_ID, state, target, datetime.utcnow())
+            self.__control.update(state, target)
         except Exception as e:
             print("Exception catched in message handler: {0}", str(e))
 
