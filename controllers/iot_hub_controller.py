@@ -1,4 +1,6 @@
+from dataclasses import dataclass
 from datetime import datetime
+import json
 import time
 from api.constants_api import ConstantsApi
 from api.control_api import ControlApi
@@ -47,15 +49,26 @@ class IotHubController:
     
     def message_handler(self, message):
         try:
-            messages = vars(message)
-            if "state" and "target" not in messages.keys():
-                print("Message doesn't contain opening information")
+            data = vars(message).get('data')
+            data_dict = json.loads(data)
+            if "state" and "target" not in data_dict.keys():
                 return
-            state = messages.get("state")
-            self.__motor_status.state = ControlState[state]
-            target = messages.get("target")
-            self.__motor_status.target = target
-            self.__control.update(state, target)
+            state = data_dict.get("state")
+            if state == 'FermerPorte':
+                update_state = ControlState["FERMER_PORTE"]
+                self.__control.update(update_state, -1)
+            elif state == 'OuvrirPorte':
+                update_state = ControlState["OUVRIR_PORTE"]
+                self.__control.update(update_state, -1)
+            elif state == 'Automatique':
+                update_state = ControlState["AUTOMATIQUE"]
+                self.__control.update(update_state, -1)
+            elif state == 'Manuel':
+                update_state = ControlState["MANUEL"]
+                target = data_dict.get("target")
+                if target:
+                    self.__control.update(update_state, target)
+                
         except Exception as e:
             print("Exception catched in message handler: {0}", str(e))
 
