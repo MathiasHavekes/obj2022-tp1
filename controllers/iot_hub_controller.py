@@ -57,16 +57,24 @@ class IotHubController:
             if state == 'FermerPorte':
                 update_state = ControlState["FERMER_PORTE"]
                 self.__control.update(update_state, -1)
+                self.__motor_status.state = update_state
             elif state == 'OuvrirPorte':
+                print("Ouvrir porte")
                 update_state = ControlState["OUVRIR_PORTE"]
                 self.__control.update(update_state, -1)
+                self.__motor_status.state = update_state
             elif state == 'Automatique':
+                print("automatique")
                 update_state = ControlState["AUTOMATIQUE"]
                 self.__control.update(update_state, -1)
+                self.__motor_status.state = update_state
             elif state == 'Manuel':
+                print("Manuel")
                 update_state = ControlState["MANUEL"]
                 target = data_dict.get("target")
                 if target:
+                    self.__motor_status.state = update_state
+                    self.__motor_status.target = target
                     self.__control.update(update_state, target)
                 
         except Exception as e:

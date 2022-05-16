@@ -37,7 +37,7 @@ class MotorStatus:
 
     @target.setter
     def target(self, new_target: int):
-        logging.info('Valeur d\'ouverture de porte entree : %s%', new_target)
+        logging.info('Valeur d\'ouverture de porte entree : %s', new_target)
         self.__target = new_target
 
     @direction.setter

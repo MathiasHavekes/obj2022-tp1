@@ -29,7 +29,6 @@ class Control:
   
   def update(self, state: ControlState, target: int):
     self.state_changed = True
-    if target > 0:
-      self.target = target
+    self.target = target
     self.state = state
         
